@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overload Costing</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            font-size: 12px;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td {
+            background-color: #fafafa;
+        }
+
+        .print-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        @media print {
+            body * {
+                display: none;
+            }
+
+            .printableArea, .printableArea * {
+                display: block;
+            }
+
+            @page {
+                size: landscape;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Instructor Overload Costing</h1>
+
+    <div class="container">
+        <!-- Form Section -->
+        <div class="form-section">
+            <h2>Enter Instructor Details</h2>
+
+            <!-- Name -->
+            <label for="name">Name:</label>
+            <select id="name">
+                <option value="Chris Aspiras">Aspiras, Chris</option>
+                <option value="Tobiane Pacana">Pacana, Tobiane</option>
+            </select>
+
+            <!-- Time Release -->
+            <label for="timeRelease">Time Release:</label>
+            <input type="number" id="timeRelease" min="0" placeholder="Enter time release" oninput="updateAllowableTeachingLoad()">
+
+            <!-- Allowable Teaching Load -->
+            <label for="allowableTeachingLoad">Allowable Teaching Load:</label>
+            <input type="number" id="allowableTeachingLoad" min="0" readonly>
+
+            <!-- Program -->
+            <label for="program">Program:</label>
+            <select id="program">
+                <option value="Architecture">Architecture</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+            </select>
+
+            <!-- Subject Details -->
+            <div id="subjectContainer">
+                <h3>Subjects</h3>
+                <table id="subjectTable">
+                    <thead>
+                        <tr>
+                            <th>Descriptive Title</th>
+                            <th>Level</th>
+                            <th>Subject Code</th>
+                            <th>Section Code</th>
+                            <th>No. of Students</th>
+                            <th>Units (LEC)</th>
+                            <th>Units (LAB)</th>
+                            <th>Equivalent Hours (LEC)</th>
+                            <th>Equivalent Hours (LAB)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="subject-group">
+                            <td>
+                                <input type="text" class="subject-title" placeholder="Enter descriptive title">
+                            </td>
+                            <td>
+                                <select class="level">
+                                    <option value="UG">UG</option>
+                                    <option value="GS">GS</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" class="subject-code" placeholder="Enter subject code">
+                            </td>
+                            <td>
+                                <input type="text" class="section-code" placeholder="Enter section code">
+                            </td>
+                            <td>
+                                <input type="number" class="no-of-students" min="1" placeholder="Enter number of students">
+                            </td>
+                            <td>
+                                <input type="number" class="units-lec" min="0" oninput="updateSubjectHours(this)">
+                            </td>
+                            <td>
+                                <input type="number" class="units-lab" min="0" oninput="updateSubjectHours(this)">
+                            </td>
+                            <td>
+                                <input type="number" class="equivalent-hours-lec" readonly>
+                            </td>
+                            <td>
+                                <input type="number" class="equivalent-hours-lab" readonly>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button class="add-subject-btn" onclick="addSubject()">Add Another Subject</button>
+            </div>
+
+
+            <!-- Total Teaching Load -->
+            <label for="totalTeachingLoad">Total Teaching Load per Week:</label>
+            <input type="number" id="totalTeachingLoad" min="0" readonly>
+
+            <!-- Teaching Overload -->
+            <label for="teachingOverload">Teaching Overload per Week:</label>
+            <input type="number" id="teachingOverload" min="0" readonly>
+
+            <!-- Rank -->
+            <label for="rank">Rank:</label>
+            <select id="rank" onchange="updateOverloadRate()">
+                <option value="Instructor Ia">Instructor Ia</option>
+                <option value="Instructor Ib">Instructor Ib</option>
+            </select>
+
+            <!-- Overload Rate per Hour -->
+            <label for="overloadRate">Overload Rate per Hour (?):</label>
+            <input type="number" id="overloadRate" min="0" readonly>
+
+            <!-- Buttons Section -->
+            <div>
+                <button onclick="submitData()">Submit</button>
+                <button id="editSaveBtn" onclick="editOrSave()" disabled>Edit</button>
+            </div>
+        </div>
+
+        <!-- Table to display the data -->
+        <h2>Instructor Overload Details</h2>
+        <div class="printableArea">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th rowspan="2">No.</th>
+                        <th rowspan="2">Name</th>
+                        <th rowspan="2">Time Release</th>
+                        <th rowspan="2">Allowable Teaching Load</th>
+                        <th rowspan="2">Program</th>
+                        <th colspan="4">Subject Details</th>
+                        <th rowspan="2">No. of Students</th>
+                        <th rowspan="2">Units (LEC)</th>
+                        <th rowspan="2">Units (LAB)</th>
+                        <th rowspan="2">Equivalent Hours (LEC)</th>
+                        <th rowspan="2">Equivalent Hours (LAB)</th>
+                        <th rowspan="2">Total Teaching Load</th>
+                        <th rowspan="2">Teaching Overload</th>
+                        <th rowspan="2">Rank</th>
+                        <th rowspan="2">Overload Rate</th>
+                        <th rowspan="2">Total Cost</th>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <th>Code</th>
+                        <th>Section</th>
+                        <th>Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        <button class="print-btn" onclick="printTable()">Print</button>
+    </div>
+
+    <script>
+        let subjectCount = 1;
+    
+        function addSubject() {
+    const subjectTableBody = document.querySelector("#subjectTable tbody");
+    const newSubjectRow = document.createElement("tr");
+    newSubjectRow.classList.add("subject-group");
+
+    newSubjectRow.innerHTML = `
+        <td>
+            <input type="text" class="subject-title" placeholder="Enter descriptive title">
+        </td>
+        <td>
+            <select class="level">
+                <option value="UG">UG</option>
+                <option value="GS">GS</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" class="subject-code" placeholder="Enter subject code">
+        </td>
+        <td>
+            <input type="text" class="section-code" placeholder="Enter section code">
+        </td>
+        <td>
+            <input type="number" class="no-of-students" min="1" placeholder="Enter number of students">
+        </td>
+        <td>
+            <input type="number" class="units-lec" min="0" oninput="updateSubjectHours(this)">
+        </td>
+        <td>
+            <input type="number" class="units-lab" min="0" oninput="updateSubjectHours(this)">
+        </td>
+        <td>
+            <input type="number" class="equivalent-hours-lec" readonly>
+        </td>
+        <td>
+            <input type="number" class="equivalent-hours-lab" readonly>
+        </td>
+    `;
+
+    subjectTableBody.appendChild(newSubjectRow);
+}
+    
+        // Update the subject hours and calculate equivalent hours for both LEC and LAB
+        function updateSubjectHours(element) {
+            const subjectGroup = element.closest(".subject-group");
+            const unitsLec = parseFloat(subjectGroup.querySelector(".units-lec").value) || 0;
+            const unitsLab = parseFloat(subjectGroup.querySelector(".units-lab").value) || 0;
+    
+            const equivalentHoursLec = unitsLec * 1; // LEC has a 1:1 ratio
+            const equivalentHoursLab = unitsLab * 3 * 0.75; // 3 hours for each LAB unit * 0.75
+    
+            subjectGroup.querySelector(".equivalent-hours-lec").value = equivalentHoursLec;
+            subjectGroup.querySelector(".equivalent-hours-lab").value = equivalentHoursLab;
+    
+            calculateTotalTeachingLoad();
+        }
+    
+        function calculateTotalTeachingLoad() {
+            let totalTeachingLoad = 0;
+    
+            const subjectGroups = document.querySelectorAll(".subject-group");
+    
+            subjectGroups.forEach(group => {
+                const equivalentHoursLec = parseFloat(group.querySelector(".equivalent-hours-lec").value) || 0;
+                const equivalentHoursLab = parseFloat(group.querySelector(".equivalent-hours-lab").value) || 0;
+    
+                totalTeachingLoad += equivalentHoursLec + equivalentHoursLab;
+            });
+    
+            document.getElementById("totalTeachingLoad").value = totalTeachingLoad.toFixed(2);
+            updateOverloadAndAllowableTeachingLoad(totalTeachingLoad);
+        }
+    
+        function updateOverloadAndAllowableTeachingLoad(totalTeachingLoad) {
+            const allowableTeachingLoad = parseFloat(document.getElementById("allowableTeachingLoad").value) || 0;
+            const teachingOverload = totalTeachingLoad - allowableTeachingLoad;
+            document.getElementById("teachingOverload").value = teachingOverload;
+        }
+    
+        function updateAllowableTeachingLoad() {
+            const timeRelease = parseFloat(document.getElementById("timeRelease").value) || 0;
+            const allowableTeachingLoad = 18 - timeRelease;
+            document.getElementById("allowableTeachingLoad").value = allowableTeachingLoad;
+        }
+    
+        function updateOverloadRate() {
+            const rank = document.getElementById("rank").value;
+            const overloadRateIa = 156.36; // Rate for Instructor Ia
+            const overloadRateIb = 198.56; // Rate for Instructor Ib
+    
+            let overloadRate;
+            if (rank === "Instructor Ia") {
+                overloadRate = overloadRateIa;
+            } else {
+                overloadRate = overloadRateIb;
+            }
+    
+            document.getElementById("overloadRate").value = overloadRate.toFixed(2);
+        }
+    
+        function submitData() {
+            const table = document.getElementById("dataTable").getElementsByTagName('tbody')[0];
+            const name = document.getElementById("name").value;
+            const timeRelease = document.getElementById("timeRelease").value;
+            const allowableTeachingLoad = document.getElementById("allowableTeachingLoad").value;
+            const program = document.getElementById("program").value;
+            const totalTeachingLoad = document.getElementById("totalTeachingLoad").value;
+            const teachingOverload = document.getElementById("teachingOverload").value;
+            const rank = document.getElementById("rank").value;
+            const overloadRate = document.getElementById("overloadRate").value;
+    
+            const subjectGroups = document.querySelectorAll('.subject-group');
+            subjectGroups.forEach((group, index) => {
+                const row = table.insertRow();
+    
+                // Add common instructor details only for the first row
+                if (index === 0) {
+                    row.innerHTML = `
+                        <td rowspan="${subjectGroups.length}">${subjectCount++}</td>
+                        <td rowspan="${subjectGroups.length}">${name}</td>
+                        <td rowspan="${subjectGroups.length}">${timeRelease}</td>
+                        <td rowspan="${subjectGroups.length}">${allowableTeachingLoad}</td>
+                        <td rowspan="${subjectGroups.length}">${program}</td>
+                    `;
+                }
+    
+                // Add subject-specific details
+                row.innerHTML += `
+                    <td>${group.querySelector('.subject-title').value}</td>
+                    <td>${group.querySelector('.subject-code').value}</td>
+                    <td>${group.querySelector('.section-code').value}</td>
+                    <td>${group.querySelector('.level').value}</td>
+                    <td>${group.querySelector('.no-of-students').value}</td>
+                    <td>${group.querySelector('.units-lec').value}</td>
+                    <td>${group.querySelector('.units-lab').value}</td>
+                    <td>${group.querySelector('.equivalent-hours-lec').value}</td>
+                    <td>${group.querySelector('.equivalent-hours-lab').value}</td>
+                    <td ${subjectGroups.length}">${totalTeachingLoad}</td>
+                    <td ${subjectGroups.length}">${teachingOverload}</td>
+                    <td ${subjectGroups.length}">${rank}</td>
+                    <td ${subjectGroups.length}">${overloadRate}</td>
+                    <td ${subjectGroups.length}">${calculateTotalCost(overloadRate, teachingOverload)}</td>
+                `;
+            });
+        }
+    
+        function calculateTotalCost(rate, overload) {
+            return overload * 18 * rate; // Updated calculation
+        }
+    
+        function printTable() {
+            window.print();
+        }
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overload Costing</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        font-size: 12px;
+        padding: 20px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 12px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
+
+      td {
+        background-color: #fafafa;
+      }
+
+      .print-btn {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        .printableArea,
+        .printableArea * {
+          visibility: visible;
+        }
+        .printableArea {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Instructor Overload Costing</h1>
+
+    <div class="container">
+      <!-- Form Section -->
+      <div class="form-section">
+        <h2>Enter Instructor Details</h2>
+
+        <!-- Name -->
+        <label for="name">Name:</label>
+        <select id="name">
+          <option value="Chris Aspiras">Aspiras, Chris</option>
+          <option value="Abdul Halil S Abdullah Ii">
+            Abdullah Ii, Abdul Halil S
+          </option>
+          <option value="Dionel O. Albina">Albina, Dionel O.</option>
+          <option value="Jim David Ang">Ang, Jim David</option>
+          <option value="Dianne Mae M. Asiñero">Asiñero, Dianne Mae M.</option>
+          <option value="Chris Francis Aspiras">Aspiras, Chris Francis</option>
+          <option value="Ronald Avelino">Avelino, Ronald</option>
+          <option value="Israel A. Baguhin">Baguhin, Israel A.</option>
+          <option value="John Rey Bajuyo">Bajuyo, John Rey</option>
+          <option value="Renzo Balabag">Balabag, Renzo</option>
+          <option value="Edgem Lloyd S. Balabis">
+            Balabis, Edgem Lloyd S.
+          </option>
+          <option value="Lawrence Balbes">Balbes, Lawrence</option>
+          <option value="Serknight Benoya">Benoya, Serknight</option>
+          <option value="Miriam Bergado">Bergado, Miriam M.</option>
+          <option value="Lory Liza D. Bulay-Og">Bulay-Og, Lory Liza D.</option>
+          <option value="Christopher Cabusas">Cabusas, Christopher</option>
+          <option value="Juliet P. Cagampang">Cagampang, Juliet P.</option>
+          <option value="Dennis Cahansa">Cahansa, Dennis</option>
+          <option value="Vera Karla S. Caingles">
+            Caingles, Vera Karla S.
+          </option>
+          <option value="Jonathan B. Calibara">Calibara, Jonathan B.</option>
+          <option value="Rocyle Canlas">Canlas, Rocyle</option>
+          <option value="Mycel A. Capilayan">Capilayan, Mycel A.</option>
+          <option value="Prances Cloribel">Cloribel, Prances</option>
+          <option value="Adonis A. Closas">Closas, Adonis A.</option>
+          <option value="Gladdy Christie H. Compasan">
+            Compasan, Gladdy Christie H.
+          </option>
+          <option value="Nelson T. Corbita">Corbita, Nelson T.</option>
+          <option value="Lorenz Jan Crujido">Crujido, Lorenz Jan</option>
+          <option value="Greg M. Cubio">Cubio, Greg M.</option>
+          <option value="Ambrosio Culutura II">Cultura II, Ambrosio</option>
+          <option value="Maria Noelyn Dano">Dano, Maria Noelyn</option>
+          <option value="Orniel B. Delos Reyes">Delos Reyes, Orniel B.</option>
+          <option value="Aimeelou Jean Demetrio">
+            Demetrio, Aimeelou Jean
+          </option>
+          <option value="Arcel S. Diaz">Diaz, Arcel S.</option>
+          <option value="Roque D. Dignos">Dignos, Roque D.</option>
+          <option value="Christopher Dolino">Dolino, Christopher</option>
+          <option value="Ferdinand Dumpa">Dumpa, Ferdinand</option>
+          <option value="Kristine Mae P.  Dunque">
+            Dunque, Kristine Mae P.
+          </option>
+          <option value="Rodesita S. Estenzo">Estenzo, Rodesita S.</option>
+          <option value="William Harvery Evangelista">
+            Evangelista, William Harvey
+          </option>
+          <option value="Jodie Rey D. Fernandez">
+            Fernandez, Jodie Rey D.
+          </option>
+          <option value="Dennis E. Ganas">Ganas, Dennis E.</option>
+          <option value="Venesa Garcia">Garcia, Venesa</option>
+          <option value="Sprinztsie Maye T. Garrucha">
+            Garrucha, Sprinztsie Maye T.
+          </option>
+          <option value="Ma. Leona Maye B. Gemina">
+            Gemina, Ma. Leona Maye B.
+          </option>
+          <option value="Clark Darwin Gozon">Gozon, Clark Darwin</option>
+          <option value="Antonette Gregorio">Gregorio, Antonette</option>
+          <option value="Daxter William Gulben">Gulben, Daxter William</option>
+          <option value="Ellen Jane Gulben">Gulben, Ellen Jane</option>
+          <option value="Gerald Harayo">Harayo, Gerald</option>
+          <option value="Marberth Custer B. Jael">
+            Jael, Marberth Custer B.
+          </option>
+          =
+          <option value="Jeanlove U. Longakit">Longakit, Jeanlove U.</option>
+          <option value="Angeleth Lucar">Lucar, Angeleth</option>
+          <option value="Agustin G. Lupoy">Lupoy, Agustin G.</option>
+          <option value="Allain Jessel P. Macas">
+            Macas, Allain Jessel P.
+          </option>
+          <option value="Clark Ian Maestrado">Maestrado, Clark Ian</option>
+          <option value="Rahcelle Ann Maestrado">
+            Maestrado, Rahcelle Ann
+          </option>
+          <option value="Antonio-Abdu Sami M. Magomnang">
+            Magomnang, Antonio-Abdu Sami M.
+          </option>
+          <option value="James Arthur L. Martinez">
+            Martinez, James Arthur L.
+          </option>
+          <option value="Alex L. Maureal">Maureal, Alex L.</option>
+          <option value="Rojilene B. Mondero">Mondero, Rojilene B.</option>
+          <option value="Mark Lister V. Nalupa">Nalupa, Mark Lister V.</option>
+          <option value="Aniceto C. Neri">Neri, Aniceto C.</option>
+          <option value="Benjamin Nunag Jr.">Nunag, Benjamin Jr.</option>
+          <option value="Jonathan S. Oche">Oche, Jonathan S.</option>
+          <option value="Kia Joyce Ongayo">Ongayo, Kia Joyce</option>
+          <option value="Leonel L. Pabilona">Pabilona, Leonel L.</option>
+          <option value="Joselito Padayhag">Padayhag, Joselito</option>
+          <option value="Kristiane B. Pagurayan">
+            Pagurayan, Kristiane B.
+          </option>
+          <option value="Reuel Pallugna">Pallugna, Reuel</option>
+          <option value="Diogenes Armando D. Pascua">
+            Pascua, Diogenes Armando D.
+          </option>
+          <option value="Herculyses Piloton">Piloton, Herculyses</option>
+          <option value="Mark Dave Plaza">Plaza, Mark Dave</option>
+          <option value="Kristine Ramay">Ramay, Kristine</option>
+          <option value="Reyvencer T. Reyes">Reyes, Reyvencer T.</option>
+          <option value="Omar Salise">Salise, Omar</option>
+          <option value="Benjie Boy Santander">Santander, Benjie Boy</option>
+          <option value="Aileen A. Sieras">Sieras, Aileen A.</option>
+          <option value="Ernest Martin Soriano">Soriano, Ernest Martin</option>
+          <option value="Carl Angelo P. Suasola">
+            Suasola, Carl Angelo P.
+          </option>
+          <option value="Marlon Suazo">Suazo, Marlon</option>
+          <option value="Jiffer John Taala">Taala, Jiffer John</option>
+          <option value="Rizadelle Z. Tagam">Tagam, Rizadelle Z.</option>
+          <option value="Rachel N. Tagolimot">Tagolimot, Rachel N.</option>
+          <option value="Roy S. Tancongco">Tancongco, Roy S.</option>
+          <option value="Mary Ann E. Telen">Telen, Mary Ann E.</option>
+          <option value="Teodely Apple C. Tindoc-Morillo">
+            Tindoc-Morillo, Teodely Apple C.
+          </option>
+          <option value="Richard Varela">Varela, Richard</option>
+          <option value="Rosalie Vertudes">Vertudes, Rosalie</option>
+          <option value="Adolph Vincent Vigor">Vigor, Adolph Vincent</option>
+          <option value="Maricel Vigor">Vigor, Maricel</option>
+          <option value="Ace Virgil D. Villaruz">
+            Villaruz, Ace Virgil D.
+          </option>
+          <option value="Archemedes Wabe">Wabe, Archemedes</option>
+          <option value="Nestor E. Ybañez">Ybañez, Nestor E.</option>
+          <option value="Lorrizza S. Zafra">Zafra, Lorrizza S.</option>
+          <option value="Lloyd Estampa">Estampa, Lloyd</option>
+        </select>
+
+        <!-- Time Release -->
+        <label for="timeRelease">Time Release:</label>
+        <input
+          type="number"
+          id="timeRelease"
+          min="0"
+          placeholder="Enter time release"
+          oninput="updateAllowableTeachingLoad()"
+        />
+
+        <!-- Allowable Teaching Load -->
+        <label for="allowableTeachingLoad">Allowable Teaching Load:</label>
+        <input type="number" id="allowableTeachingLoad" min="0" readonly />
+
+        <!-- Program -->
+        <label for="program">Program:</label>
+        <select id="program">
+          <option value="Architecture">Architecture</option>
+          <option value="Civil Engineering">Civil Engineering</option>
+          <option value="Mechanical Engineering">Mechanical Engineering</option>
+        </select>
+
+        <!-- Subject Details -->
+        <div id="subjectContainer">
+          <h3>Subjects</h3>
+          <table id="subjectTable">
+            <thead>
+              <tr>
+                <th>Descriptive Title</th>
+                <th>Level</th>
+                <th>Subject Code</th>
+                <th>Section Code</th>
+                <th>No. of Students</th>
+                <th>Units (LEC)</th>
+                <th>Units (LAB)</th>
+                <th>Equivalent Hours (LEC)</th>
+                <th>Equivalent Hours (LAB)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="subject-group">
+                <td>
+                  <input
+                    type="text"
+                    class="subject-title"
+                    placeholder="Enter descriptive title"
+                  />
+                </td>
+                <td>
+                  <select class="level">
+                    <option value="UG">UG</option>
+                    <option value="GS">GS</option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="subject-code"
+                    placeholder="Enter subject code"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="section-code"
+                    placeholder="Enter section code"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="no-of-students"
+                    min="1"
+                    placeholder="Enter number of students"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="units-lec"
+                    min="0"
+                    oninput="updateSubjectHours(this)"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="units-lab"
+                    min="0"
+                    oninput="updateSubjectHours(this)"
+                  />
+                </td>
+                <td>
+                  <input type="number" class="equivalent-hours-lec" readonly />
+                </td>
+                <td>
+                  <input type="number" class="equivalent-hours-lab" readonly />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="add-subject-btn" onclick="addSubject()">
+            Add Another Subject
+          </button>
+        </div>
+
+        <div id="ThesisContainer">
+          <h3>Thesis</h3>
+          <table id="thesisTable">
+            <thead>
+              <tr>
+                <th>Descriptive Title</th>
+                <th>Level</th>
+                <th>Subject Code</th>
+                <th>Section Code</th>
+                <th>No. of Students</th>
+                <th>Units (LEC)</th>
+                <th>Units (LAB)</th>
+                <th>Equivalent Hours (LEC)</th>
+                <th>Equivalent Hours (LAB)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="thesis-group">
+                <td>
+                  <input
+                    type="text"
+                    class="thesis-title"
+                    placeholder="Enter descriptive title"
+                  />
+                </td>
+                <td>
+                  <select
+                    class="thesis-level"
+                    onchange="updateThesisHours(this)"
+                  >
+                    <option value="UG">UG</option>
+                    <option value="GS">GS</option>
+                  </select>
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="thesis-code"
+                    placeholder="Enter subject code"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    class="thesis-section-code"
+                    placeholder="Enter section code"
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="thesis-no-of-students"
+                    min="1"
+                    placeholder="Enter number of students"
+                    oninput="updateThesisHours(this)"
+                  />
+                </td>
+                <td>
+                  <input type="number" class="units-lec" value="0" readonly />
+                </td>
+                <td>
+                  <input type="number" class="units-lab" value="0" readonly />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="equivalent-hours-lec"
+                    value="0"
+                    readonly
+                  />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="equivalent-hours-lab"
+                    value="0"
+                    readonly
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <button class="add-thesis-btn" onclick="addThesis()">
+            Add Another Thesis
+          </button>
+        </div>
+
+        <!-- Total Teaching Load -->
+        <label for="totalTeachingLoad">Total Teaching Load per Week:</label>
+        <input type="number" id="totalTeachingLoad" min="0" readonly />
+
+        <!-- Teaching Overload -->
+        <label for="teachingOverload">Teaching Overload per Week:</label>
+        <input type="number" id="teachingOverload" min="0" readonly />
+
+        <!-- Rank -->
+        <label for="rank">Rank:</label>
+        <select id="rank" onchange="updateOverloadRate()">
+          <option value="Instructor Ia">Instructor Ia</option>
+          <option value="Instructor Ib">Instructor Ib</option>
+        </select>
+
+        <!-- Overload Rate per Hour -->
+        <label for="overloadRate">Overload Rate per Hour (?):</label>
+        <input type="number" id="overloadRate" min="0" readonly />
+
+        <!-- Buttons Section -->
+        <div>
+          <button onclick="submitData()">Submit</button>
+          <button id="editSaveBtn" onclick="editOrSave()" disabled>Edit</button>
+        </div>
+      </div>
+
+      <!-- Table to display the data -->
+      <h2>Instructor Overload Details</h2>
+      <div class="printableArea">
+        <table id="dataTable">
+          <thead>
+            <tr>
+              <th rowspan="2">No.</th>
+              <th rowspan="2">Name</th>
+              <th rowspan="2">Time Release</th>
+              <th rowspan="2">Allowable Teaching Load</th>
+              <th rowspan="2">Program</th>
+              <th colspan="4">Subject Details</th>
+              <th rowspan="2">No. of Students</th>
+              <th rowspan="2">Units (LEC)</th>
+              <th rowspan="2">Units (LAB)</th>
+              <th rowspan="2">Equivalent Hours (LEC)</th>
+              <th rowspan="2">Equivalent Hours (LAB)</th>
+              <th rowspan="2">Total Teaching Load</th>
+              <th rowspan="2">Teaching Overload</th>
+              <th rowspan="2">Rank</th>
+              <th rowspan="2">Overload Rate</th>
+              <th rowspan="2">Total Cost</th>
+            </tr>
+            <tr>
+              <th>Title</th>
+              <th>Code</th>
+              <th>Section</th>
+              <th>Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data will be inserted here -->
+          </tbody>
+        </table>
+      </div>
+      <button class="print-btn" onclick="printTable()">Print</button>
+    </div>
+
+    <script>
+      let subjectCount = 1;
+
+      function addSubject() {
+        const subjectTableBody = document.querySelector("#subjectTable tbody");
+        const newSubjectRow = document.createElement("tr");
+        newSubjectRow.classList.add("subject-group");
+
+        newSubjectRow.innerHTML = `
+        <td>
+            <input type="text" class="subject-title" placeholder="Enter descriptive title">
+        </td>
+        <td>
+            <select class="level">
+                <option value="UG">UG</option>
+                <option value="GS">GS</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" class="subject-code" placeholder="Enter subject code">
+        </td>
+        <td>
+            <input type="text" class="section-code" placeholder="Enter section code">
+        </td>
+        <td>
+            <input type="number" class="no-of-students" min="1" placeholder="Enter number of students">
+        </td>
+        <td>
+            <input type="number" class="units-lec" min="0" oninput="updateSubjectHours(this)">
+        </td>
+        <td>
+            <input type="number" class="units-lab" min="0" oninput="updateSubjectHours(this)">
+        </td>
+        <td>
+            <input type="number" class="equivalent-hours-lec" readonly>
+        </td>
+        <td>
+            <input type="number" class="equivalent-hours-lab" readonly>
+        </td>
+    `;
+
+        subjectTableBody.appendChild(newSubjectRow);
+      }
+
+      // Update the subject hours and calculate equivalent hours for both LEC and LAB
+      function updateSubjectHours(element) {
+        const subjectGroup = element.closest(".subject-group");
+        const unitsLec =
+          parseFloat(subjectGroup.querySelector(".units-lec").value) || 0;
+        const unitsLab =
+          parseFloat(subjectGroup.querySelector(".units-lab").value) || 0;
+
+        const equivalentHoursLec = unitsLec * 1; // LEC has a 1:1 ratio
+        const equivalentHoursLab = unitsLab * 3 * 0.75; // 3 hours for each LAB unit * 0.75
+
+        subjectGroup.querySelector(".equivalent-hours-lec").value =
+          equivalentHoursLec;
+        subjectGroup.querySelector(".equivalent-hours-lab").value =
+          equivalentHoursLab;
+
+        calculateTotalTeachingLoad();
+      }
+
+      function calculateTotalTeachingLoad() {
+        let totalTeachingLoad = 0;
+
+        const subjectGroups = document.querySelectorAll(".subject-group");
+        const thesisGroups = document.querySelectorAll(".thesis-group");
+
+        // Calculate load for subjects
+        subjectGroups.forEach((group) => {
+          const equivalentHoursLec =
+            parseFloat(group.querySelector(".equivalent-hours-lec").value) || 0;
+          const equivalentHoursLab =
+            parseFloat(group.querySelector(".equivalent-hours-lab").value) || 0;
+          totalTeachingLoad += equivalentHoursLec + equivalentHoursLab;
+        });
+
+        // Calculate load for thesis
+        thesisGroups.forEach((group) => {
+          const equivalentHoursLab =
+            parseFloat(group.querySelector(".equivalent-hours-lab").value) || 0;
+          totalTeachingLoad += equivalentHoursLab; // Only LAB hours count for thesis
+        });
+
+        document.getElementById("totalTeachingLoad").value =
+          totalTeachingLoad.toFixed(2);
+        updateOverloadAndAllowableTeachingLoad(totalTeachingLoad);
+      }
+
+      function updateOverloadAndAllowableTeachingLoad(totalTeachingLoad) {
+        const allowableTeachingLoad =
+          parseFloat(document.getElementById("allowableTeachingLoad").value) ||
+          0;
+        const teachingOverload = totalTeachingLoad - allowableTeachingLoad;
+        document.getElementById("teachingOverload").value = teachingOverload;
+      }
+
+      function updateAllowableTeachingLoad() {
+        const timeRelease =
+          parseFloat(document.getElementById("timeRelease").value) || 0;
+        const allowableTeachingLoad = 18 - timeRelease;
+        document.getElementById("allowableTeachingLoad").value =
+          allowableTeachingLoad;
+      }
+
+      function updateOverloadRate() {
+        const rank = document.getElementById("rank").value;
+        const overloadRateIa = 156.76; // Rate for Instructor Ia
+        const overloadRateIb = 198.56; // Rate for Instructor Ib
+
+        let overloadRate;
+        if (rank === "Instructor Ia") {
+          overloadRate = overloadRateIa;
+        } else {
+          overloadRate = overloadRateIb;
+        }
+
+        document.getElementById("overloadRate").value = overloadRate.toFixed(2);
+      }
+
+      function updateThesisHours(input) {
+        const row = input.closest("tr"); // Get the current thesis row
+        const noOfStudents =
+          parseFloat(row.querySelector(".thesis-no-of-students").value) || 0;
+        const level = row.querySelector(".thesis-level").value;
+
+        let thesisLoad = 0;
+
+        // Calculate teaching load based on level
+        if (level === "UG") {
+          thesisLoad = noOfStudents * 0.75;
+        } else if (level === "GS") {
+          thesisLoad = noOfStudents * 1.25;
+        }
+
+        // Set the equivalent hours (LAB) for thesis
+        row.querySelector(".equivalent-hours-lab").value =
+          thesisLoad.toFixed(2);
+
+        // Units (LEC), Units (LAB), and Equivalent Hours (LEC) for thesis are always 0
+        row.querySelector(".units-lec").value = 0;
+        row.querySelector(".units-lab").value = 0;
+        row.querySelector(".equivalent-hours-lec").value = 0;
+
+        // Update the total teaching load
+        calculateTotalTeachingLoad();
+      }
+
+      function addThesis() {
+        const thesisTableBody = document.querySelector("#thesisTable tbody");
+        const newThesisRow = document.createElement("tr");
+        newThesisRow.classList.add("thesis-group");
+
+        newThesisRow.innerHTML = `
+        <td>
+            <input type="text" class="thesis-title" placeholder="Enter descriptive title" />
+        </td>
+        <td>
+            <select class="thesis-level" onchange="updateThesisHours(this)">
+                <option value="UG">UG</option>
+                <option value="GS">GS</option>
+            </select>
+        </td>
+        <td>
+            <input type="text" class="thesis-code" placeholder="Enter subject code" />
+        </td>
+        <td>
+            <input type="text" class="thesis-section-code" placeholder="Enter section code" />
+        </td>
+        <td>
+            <input type="number" class="thesis-no-of-students" min="1" placeholder="Enter number of students" oninput="updateThesisHours(this)" />
+        </td>
+    `;
+
+        thesisTableBody.appendChild(newThesisRow);
+
+        // Add to Subject Table with units set to 0
+        const subjectTableBody = document.querySelector("#subjectTable tbody");
+        const newSubjectRow = document.createElement("tr");
+        newSubjectRow.innerHTML = `
+        <td>${newThesisRow.querySelector(".thesis-title").value}</td>
+        <td>${newThesisRow.querySelector(".thesis-level").value}</td>
+        <td>${newThesisRow.querySelector(".thesis-code").value}</td>
+        <td>${newThesisRow.querySelector(".thesis-section-code").value}</td>
+        <td>${newThesisRow.querySelector(".thesis-no-of-students").value}</td>
+        <td>0</td> <!-- Set Units (LEC) to 0 -->
+        <td>0</td> <!-- Set Units (LAB) to 0 -->
+        <td>0</td> <!-- Set Equivalent Hours (LEC) to 0 -->
+        <td>0</td> <!-- Set Equivalent Hours (LAB) to 0 -->
+    `;
+
+        subjectTableBody.appendChild(newSubjectRow);
+      }
+
+      function submitData() {
+        const table = document
+          .getElementById("dataTable")
+          .getElementsByTagName("tbody")[0];
+        const name = document.getElementById("name").value;
+        const timeRelease = document.getElementById("timeRelease").value;
+        const allowableTeachingLoad = document.getElementById(
+          "allowableTeachingLoad"
+        ).value;
+        const program = document.getElementById("program").value;
+        const totalTeachingLoad =
+          document.getElementById("totalTeachingLoad").value;
+        const teachingOverload =
+          document.getElementById("teachingOverload").value;
+        const rank = document.getElementById("rank").value;
+        const overloadRate = document.getElementById("overloadRate").value;
+
+        const subjectGroups = document.querySelectorAll(".subject-group");
+        const thesisGroups = document.querySelectorAll(".thesis-group");
+
+        // Check if there are any subject or thesis groups
+        if (subjectGroups.length === 0 && thesisGroups.length === 0) {
+          alert("Please add at least one subject or thesis.");
+          return; // Exit if no subjects or theses are present
+        }
+
+        // Create a new row for the first subject group or thesis group
+        const row = table.insertRow();
+        row.innerHTML = `
+    <td rowspan="${
+      subjectGroups.length + thesisGroups.length
+    }">${subjectCount++}</td>
+    <td rowspan="${subjectGroups.length + thesisGroups.length}">${name}</td>
+    <td rowspan="${
+      subjectGroups.length + thesisGroups.length
+    }">${timeRelease}</td>
+    <td rowspan="${
+      subjectGroups.length + thesisGroups.length
+    }">${allowableTeachingLoad}</td>
+    <td rowspan="${subjectGroups.length + thesisGroups.length}">${program}</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".subject-title").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".subject-code").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".section-code").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".level").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".no-of-students").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".units-lec").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".units-lab").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".equivalent-hours-lec").value
+        : ""
+    }</td>
+    <td>${
+      subjectGroups.length > 0
+        ? subjectGroups[0].querySelector(".equivalent-hours-lab").value
+        : ""
+    }</td>
+    <td rowspan="${
+      subjectGroups.length + thesisGroups.length
+    }">${totalTeachingLoad}</td>
+    <td rowspan="${
+      subjectGroups.length + thesisGroups.length
+    }">${teachingOverload}</td>
+    <td rowspan="${subjectGroups.length + thesisGroups.length}">${rank}</td>
+    <td rowspan="${
+      subjectGroups.length + thesisGroups.length
+    }">${overloadRate}</td>
+    <td rowspan="${
+      subjectGroups.length + thesisGroups.length
+    }">${calculateTotalCost(overloadRate, teachingOverload)}</td>
+  `;
+
+        // Add rows for the remaining subject groups
+        for (let i = 1; i < subjectGroups.length; i++) {
+          const subjectRow = table.insertRow();
+          subjectRow.innerHTML = `
+      <td>${subjectGroups[i].querySelector(".subject-title").value}</td>
+      <td>${subjectGroups[i].querySelector(".subject-code").value}</td>
+      <td>${subjectGroups[i].querySelector(".section-code").value}</td>
+      <td>${subjectGroups[i].querySelector(".level").value}</td>
+      <td>${subjectGroups[i].querySelector(".no-of-students").value}</td>
+      <td>${subjectGroups[i].querySelector(".units-lec").value}</td>
+      <td>${subjectGroups[i].querySelector(".units-lab").value}</td>
+      <td>${subjectGroups[i].querySelector(".equivalent-hours-lec").value}</td>
+      <td>${subjectGroups[i].querySelector(".equivalent-hours-lab").value}</td>
+    `;
+        }
+
+        // Add rows for the thesis groups (with Units and Equivalent Hours set to 0)
+        for (let j = 0; j < thesisGroups.length; j++) {
+          const thesisRow = table.insertRow();
+          thesisRow.innerHTML = `
+      <td>${thesisGroups[j].querySelector(".thesis-title").value}</td>
+      <td>${thesisGroups[j].querySelector(".thesis-code").value}</td>
+      <td>${thesisGroups[j].querySelector(".thesis-section-code").value}</td>
+      <td>${thesisGroups[j].querySelector(".thesis-level").value}</td>
+      <td>${thesisGroups[j].querySelector(".thesis-no-of-students").value}</td>
+      <td>0</td> <!-- Units Lec set to 0 for thesis -->
+      <td>0</td> <!-- Units Lab set to 0 for thesis -->
+      <td>0</td> <!-- Equivalent Lec Hours set to 0 for thesis -->
+      <td>0</td> <!-- Equivalent Lab Hours set to 0 for thesis -->
+    `;
+        }
+      }
+
+      function calculateTotalCost(rate, overload) {
+        return overload * 18 * rate; // Updated calculation
+      }
+
+      function printTable() {
+        window.print();
+      }
+    </script>
+  </body>
+</html>
